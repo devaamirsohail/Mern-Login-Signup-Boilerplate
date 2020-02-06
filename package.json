@@ -1,0 +1,36 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client-install": "npm install --prefix client",
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "keywords": [],
+  "author": "Aamir Maan",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "concurrently": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-jwt": "^5.3.1",
+    "express-validator": "^6.3.0",
+    "google-auth-library": "^5.7.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.8.3",
+    "node-fetch": "^2.6.0",
+    "nodemailer": "^6.4.2",
+    "validator": "^12.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
