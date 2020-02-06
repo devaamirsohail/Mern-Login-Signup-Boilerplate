@@ -42,9 +42,9 @@ const useStyles = makeStyles(theme => ({
 
 const Signup = () => {
   const [values, setValues] = useState({
-    name: "Test",
-    email: "dev.aamirsohail@gmail.com",
-    password: "123456"
+    name: "",
+    email: "",
+    password: ""
   });
   const classes = useStyles();
 
