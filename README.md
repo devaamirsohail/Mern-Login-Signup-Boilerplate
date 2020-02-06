@@ -8,7 +8,9 @@ Run
 #### npm install
 #### npm run dev
 
-## Features
+# Features
+### Login and Signup
+### User Role Management
 ### Email Authentication Using nodemailer SMTP
 ### Forget Password
 ### Google Login
@@ -16,6 +18,8 @@ Run
 ### Interface designed using Material-UI 
 ### bcryptjs for Hashing Password
 ### Server side validations
+### Toastify Notifications
+
 
 
 
