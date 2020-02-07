@@ -3,14 +3,10 @@ import { Redirect, withRouter } from "react-router-dom";
 import jwt from "jsonwebtoken";
 import { useDispatch } from "react-redux";
 
-import { ToastContainer } from "react-toastify";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-
-import "react-toastify/dist/ReactToastify.min.css";
-import "react-toastify/cjs/react-toastify.min";
 
 import { activateAccount } from "../../actions/authActions";
 
@@ -69,7 +65,6 @@ const Activate = ({ match, history }) => {
   );
   return (
     <div className="col-md-6 col-md-offset-3">
-      <ToastContainer />
       {show ? null : <Redirect to="/signin" />}
       {activateAccountForm()}
     </div>

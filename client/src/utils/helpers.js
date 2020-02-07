@@ -70,7 +70,6 @@ export const isAuth = () => {
 export const signout = () => {
   removeCookie("token");
   removeLocalStorage("user");
-  console.log("Local");
 };
 //Update user during profile update action
 export const updateUser = (response, next) => {

@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { ToastContainer } from "react-toastify";
-import { useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-import "react-toastify/dist/ReactToastify.min.css";
-import "react-toastify/cjs/react-toastify.min";
 import {
   makeStyles,
   Avatar,
@@ -17,7 +14,7 @@ import {
 } from "@material-ui/core";
 import UpdateOutlinedIcon from "@material-ui/icons/UpdateOutlined";
 
-import { isAuth, getCookie, signout } from "../../utils/helpers";
+import { getCookie } from "../../utils/helpers";
 import { updateSubscriber } from "../../actions/profileActions";
 
 const useStyles = makeStyles(theme => ({
@@ -42,44 +39,18 @@ const useStyles = makeStyles(theme => ({
 
 const Subscriber = ({ history }) => {
   const classes = useStyles();
+  const auth = useSelector(state => state.auth.isAuthenticated);
+  const user = useSelector(state => state.auth.user);
+  const errors = useSelector(state => state.errors);
   const [values, setValues] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: ""
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    password: ""
   });
   const dispatch = useDispatch();
   const token = getCookie("token");
-  useEffect(() => {
-    const loadProfile = () => {
-      axios({
-        method: "GET",
-        url: `${process.env.REACT_APP_API}/user/${isAuth()._id}`,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-        .then(response => {
-          //console.log("Get User Response:", response);
-          const { role, name, email } = response.data;
-          setValues({
-            ...values,
-            role,
-            name,
-            email
-          });
-        })
-        .catch(error => {
-          //console.log("Get User Error:", error.response.data);
-          if (error.response.status === 401) {
-            signout(() => {
-              history.push("/signin");
-            });
-          }
-        });
-    };
-    loadProfile();
-  }, [history, token]);
+
   const { name, email, role, password } = values;
 
   const handleChange = name => event => {
@@ -107,7 +78,8 @@ const Subscriber = ({ history }) => {
             name="name"
             onChange={handleChange("name")}
             value={name}
-            autoComplete="lname"
+            error={errors && errors.name ? true : false}
+            helperText={errors && errors.name}
           />
         </Grid>
         <Grid item xs={12}>
@@ -147,7 +119,8 @@ const Subscriber = ({ history }) => {
             id="password"
             onChange={handleChange("password")}
             value={password}
-            autoComplete="current-password"
+            error={errors && errors.password ? true : false}
+            helperText={errors && errors.password}
           />
         </Grid>
       </Grid>
@@ -174,7 +147,7 @@ const Subscriber = ({ history }) => {
         <Typography component="h1" variant="h5">
           Profile Update
         </Typography>
-        <ToastContainer />
+        {auth ? null : <Redirect to="/signin" />}
         {updateForm()}
       </div>
     </Container>

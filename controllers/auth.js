@@ -142,9 +142,8 @@ exports.signin = (req, res) => {
         .then(isMatch => {
           //authenticate
           if (!isMatch) {
-            return res.status(400).json({
-              error: "Password incorrect"
-            });
+            errors.password = "Password incorrect";
+            return res.status(400).json(errors);
           }
           // Sign token and send to user
           const token = jwt.sign(

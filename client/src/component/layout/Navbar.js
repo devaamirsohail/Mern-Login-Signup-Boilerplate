@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logoutUser } from "../../actions/authActions";
+import { logoutUser, clearErrors } from "../../actions/authActions";
 
-const Navbar = ({ history }) => {
+const Navbar = () => {
   const user = useSelector(state => state.auth.user);
   const auth = useSelector(state => state.auth.isAuthenticated);
   const dispatch = useDispatch();
@@ -11,12 +11,20 @@ const Navbar = ({ history }) => {
     <ul className="navbar-nav ml-auto">
       <li className="nav-item">
         {user && user.role === "admin" && (
-          <Link className="nav-link" to="/admin">
+          <Link
+            onClick={() => dispatch(clearErrors())}
+            className="nav-link"
+            to="/admin"
+          >
             {user.name}
           </Link>
         )}
         {user && user.role === "subscriber" && (
-          <Link className="nav-link" to="/subscriber">
+          <Link
+            onClick={() => dispatch(clearErrors())}
+            className="nav-link"
+            to="/subscriber"
+          >
             {user.name}
           </Link>
         )}
@@ -29,7 +37,7 @@ const Navbar = ({ history }) => {
             dispatch(logoutUser());
           }}
         >
-          Signout
+          Logout
         </Link>
       </li>
     </ul>
@@ -37,12 +45,20 @@ const Navbar = ({ history }) => {
   const guestLinks = (
     <ul className="navbar-nav ml-auto">
       <li className="nav-item">
-        <Link className="nav-link" to="/signup">
+        <Link
+          onClick={() => dispatch(clearErrors())}
+          className="nav-link"
+          to="/signup"
+        >
           Sign Up
         </Link>
       </li>
       <li className="nav-item">
-        <Link className="nav-link" to="/signin">
+        <Link
+          onClick={() => dispatch(clearErrors())}
+          className="nav-link"
+          to="/signin"
+        >
           Login
         </Link>
       </li>
@@ -51,7 +67,11 @@ const Navbar = ({ history }) => {
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark mb-4">
       <div className="container">
-        <Link className="navbar-brand" to="/">
+        <Link
+          onClick={() => dispatch(clearErrors())}
+          className="navbar-brand"
+          to="/"
+        >
           Home
         </Link>
         <button

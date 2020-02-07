@@ -1,10 +1,8 @@
 import axios from "axios";
 
-import { toast } from "react-toastify";
-
 import { updateUser } from "../utils/helpers";
 
-import { GET_ERRORS, UPDATE_USER } from "./types";
+import { GET_ERRORS, UPDATE_USER, ENABLE_FLASH_MESSAGE } from "./types";
 
 //Register User
 export const updateAdmin = (userData, token) => dispatch => {
@@ -18,7 +16,10 @@ export const updateAdmin = (userData, token) => dispatch => {
   })
     .then(res => {
       updateUser(res, () => {
-        toast.success("Profile Updated Successfully.");
+        dispatch({
+          type: ENABLE_FLASH_MESSAGE,
+          payload: { message: "Profile Updated Successfully.", type: "success" }
+        });
       });
       dispatch({
         type: UPDATE_USER,
@@ -26,7 +27,10 @@ export const updateAdmin = (userData, token) => dispatch => {
       });
     })
     .catch(err => {
-      toast.error(err.response.data.error);
+      dispatch({
+        type: ENABLE_FLASH_MESSAGE,
+        payload: { message: "Error", type: "error" }
+      });
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data
@@ -45,7 +49,10 @@ export const updateSubscriber = (userData, token) => dispatch => {
   })
     .then(res => {
       updateUser(res, () => {
-        toast.success("Profile Updated Successfully.");
+        dispatch({
+          type: ENABLE_FLASH_MESSAGE,
+          payload: { message: "Profile Updated Successfully.", type: "success" }
+        });
       });
       dispatch({
         type: UPDATE_USER,
@@ -53,7 +60,10 @@ export const updateSubscriber = (userData, token) => dispatch => {
       });
     })
     .catch(err => {
-      toast.error(err.response.data.error);
+      dispatch({
+        type: ENABLE_FLASH_MESSAGE,
+        payload: { message: "Error", type: "error" }
+      });
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data

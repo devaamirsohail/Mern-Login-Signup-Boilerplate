@@ -19,6 +19,7 @@ import PrivateRoute from "./utils/common/PrivateRoute";
 import Admin from "./component/private/Admin";
 import Subscriber from "./component/private/Subscriber";
 import NotFound from "./component/not-found/NotFound";
+import MySnackBar from "./component/common/MySnackBar";
 
 import { getCookie } from "./utils/helpers";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
@@ -33,7 +34,6 @@ if (token) {
   const decoded = jwt_decode(token);
   //Set user and isAuthenticated
   store.dispatch(setCurrentUser(JSON.parse(user)));
-  console.log(user);
   //Check for expired token
   const currentTime = Date.now() / 1000;
   if (decoded.exp < currentTime) {
@@ -69,6 +69,7 @@ const App = () => {
             <Route path="/reset-password/:token" component={Reset} />
             <Route component={NotFound} />
           </Switch>
+          <MySnackBar />
           <Footer />
         </div>
       </Router>

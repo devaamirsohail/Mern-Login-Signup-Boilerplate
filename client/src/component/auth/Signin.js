@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { withRouter } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-import { loginUser } from "../../actions/authActions";
+import { loginUser, clearErrors } from "../../actions/authActions";
 import {
   makeStyles,
   Avatar,
@@ -16,8 +15,6 @@ import {
   Container
 } from "@material-ui/core";
 import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
-import "react-toastify/dist/ReactToastify.min.css";
-import "react-toastify/cjs/react-toastify.min";
 
 import Google from "./Google";
 
@@ -51,6 +48,7 @@ const Signin = ({ history }) => {
   const { email, password } = values;
 
   const auth = useSelector(state => state.auth.isAuthenticated);
+  const errors = useSelector(state => state.errors);
   const dispatch = useDispatch();
 
   const handleChange = name => event => {
@@ -85,7 +83,8 @@ const Signin = ({ history }) => {
           name="email"
           value={email}
           onChange={handleChange("email")}
-          autoComplete="email"
+          error={errors && (errors.email || errors.error) ? true : false}
+          helperText={errors && (errors.email || errors.error)}
           autoFocus
         />
         <TextField
@@ -99,7 +98,8 @@ const Signin = ({ history }) => {
           id="password"
           value={password}
           onChange={handleChange("password")}
-          autoComplete="current-password"
+          error={errors && errors.password ? true : false}
+          helperText={errors && errors.password}
         />
 
         <Button
@@ -115,12 +115,20 @@ const Signin = ({ history }) => {
         <Google />
         <Grid container>
           <Grid item xs>
-            <Link to="/forgot-password" variant="body2">
+            <Link
+              onClick={() => dispatch(clearErrors())}
+              to="/forgot-password"
+              variant="body2"
+            >
               Forgot password?
             </Link>
           </Grid>
           <Grid item>
-            <Link to="/signup" variant="body2">
+            <Link
+              onClick={() => dispatch(clearErrors())}
+              to="/signup"
+              variant="body2"
+            >
               {"Don't have an account? Sign Up"}
             </Link>
           </Grid>
@@ -133,7 +141,6 @@ const Signin = ({ history }) => {
     <Container component="main" maxWidth="xs">
       {auth ? <Redirect to="/" /> : null}
       <CssBaseline />
-      <ToastContainer />
       {signinForm()}
     </Container>
   );

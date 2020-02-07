@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import jwt from "jsonwebtoken";
-import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import {
@@ -13,9 +12,6 @@ import {
   Container
 } from "@material-ui/core";
 import RotateLeftIcon from "@material-ui/icons/RotateLeft";
-
-import "react-toastify/dist/ReactToastify.min.css";
-import "react-toastify/cjs/react-toastify.min";
 
 import { resetPassword } from "../../actions/authActions";
 
@@ -43,6 +39,7 @@ const useStyles = makeStyles(theme => ({
 const Reset = ({ match }) => {
   const classes = useStyles();
   const auth = useSelector(state => state.auth.isAuthenticated);
+  const errors = useSelector(state => state.errors);
 
   //props.match from react router dom
   const [values, setValues] = useState({
@@ -91,7 +88,8 @@ const Reset = ({ match }) => {
           id="password"
           onChange={handleChange}
           value={newPassword}
-          autoComplete="current-password"
+          error={errors && errors.password ? true : false}
+          helperText={errors && errors.password}
         />
 
         <Button
@@ -111,7 +109,6 @@ const Reset = ({ match }) => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <ToastContainer />
       {auth ? <Redirect to="/" /> : null}
       {resetPasswordForm()}
     </Container>

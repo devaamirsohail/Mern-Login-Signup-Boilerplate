@@ -1,28 +1,35 @@
 import axios from "axios";
 
-import { toast } from "react-toastify";
-
 import { authenticate, isAuth, signout } from "../utils/helpers";
 
-import { GET_ERRORS, CLEAR_ERRORS, SET_CURRENT_USER, LOADING } from "./types";
+import {
+  GET_ERRORS,
+  CLEAR_ERRORS,
+  SET_CURRENT_USER,
+  LOADING,
+  ENABLE_FLASH_MESSAGE
+} from "./types";
 
 //Register User
-export const registerUser = userData => dispatch => {
-  dispatch(clearErrors());
-  dispatch(setLoading());
+export const registerUser = (userData, history) => dispatch => {
   axios
     .post(`${process.env.REACT_APP_API}/signup`, userData)
     .then(res => {
-      toast.success(res.data.message);
+      dispatch({
+        type: ENABLE_FLASH_MESSAGE,
+        payload: { message: res.data.message, type: "success" }
+      });
+      history.push("/signin");
+      dispatch(clearErrors());
     })
     .catch(err => {
-      toast.error(err.response.data.name);
-      toast.error(err.response.data.email);
-      toast.error(err.response.data.password);
-      toast.error(err.response.data.message);
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data
+      });
+      dispatch({
+        type: ENABLE_FLASH_MESSAGE,
+        payload: { message: "Error", type: "error" }
       });
     });
 };
@@ -31,15 +38,21 @@ export const activateAccount = (token, history) => dispatch => {
   axios
     .post(`${process.env.REACT_APP_API}/account-activation`, token)
     .then(res => {
-      toast.success(res.data.message);
+      dispatch({
+        type: ENABLE_FLASH_MESSAGE,
+        payload: { message: res.data.message, type: "success" }
+      });
+      dispatch(clearErrors());
       history.push("/signin");
     })
     .catch(err => {
-      console.log(err);
-      toast.error(err.response.data.error);
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data
+      });
+      dispatch({
+        type: ENABLE_FLASH_MESSAGE,
+        payload: { message: err.response.data.error, type: "error" }
       });
     });
 };
@@ -53,19 +66,21 @@ export const loginUser = (userData, history) => dispatch => {
       authenticate(res, () => {
         isAuth() && isAuth().role === "admin"
           ? history.push("/admin")
-          : history.push("subscriber");
+          : history.push("/subscriber");
       });
       const { user } = res.data;
       //set current user
       dispatch(setCurrentUser(user));
+      dispatch(clearErrors());
     })
     .catch(err => {
-      toast.error(err.response.data.error);
-      toast.error(err.response.data.email);
-      toast.error(err.response.data.password);
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data
+      });
+      dispatch({
+        type: ENABLE_FLASH_MESSAGE,
+        payload: { message: "Error", type: "error" }
       });
     });
 };
@@ -78,34 +93,43 @@ export const googleLoginUser = (idToken, history) => dispatch => {
       authenticate(res, () => {
         isAuth() && isAuth().role === "admin"
           ? history.push("/admin")
-          : history.push("subscriber");
+          : history.push("/subscriber");
       });
       const { user } = res.data;
       //set current user
       dispatch(setCurrentUser(user));
+      dispatch(clearErrors());
     })
     .catch(err => {
-      console.log(err);
-      toast.error(err.response.data.error);
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.error
+        payload: { GoogleLoginError: "Connection Error, Please try again" }
+      });
+      dispatch({
+        type: ENABLE_FLASH_MESSAGE,
+        payload: { message: "Error, Try Again", type: "error" }
       });
     });
 };
-//Forget Pasword
-export const forgetPassword = email => dispatch => {
+//Forgot Pasword
+export const forgotPassword = email => dispatch => {
   axios
     .put(`${process.env.REACT_APP_API}/forgot-password`, email)
-    .then(res => toast.success(res.data.message))
+    .then(res => {
+      dispatch({
+        type: ENABLE_FLASH_MESSAGE,
+        payload: { message: res.data.message, type: "success" }
+      });
+      dispatch(clearErrors());
+    })
     .catch(err => {
-      console.log(err.response);
-
-      toast.error(err.response.data.email);
-      toast.error(err.response.data.error);
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data
+      });
+      dispatch({
+        type: ENABLE_FLASH_MESSAGE,
+        payload: { message: "Error", type: "error" }
       });
     });
 };
@@ -114,14 +138,20 @@ export const resetPassword = resetPasswordData => dispatch => {
   axios
     .put(`${process.env.REACT_APP_API}/reset-password`, resetPasswordData)
     .then(res => {
-      toast.success(res.data.message);
+      dispatch({
+        type: ENABLE_FLASH_MESSAGE,
+        payload: { message: res.data.message, type: "success" }
+      });
+      dispatch(clearErrors());
     })
     .catch(err => {
-      toast.error(err.response.data.error);
-      toast.error(err.response.data.password);
       dispatch({
         type: GET_ERRORS,
-        payload: err.response
+        payload: err.response.data
+      });
+      dispatch({
+        type: ENABLE_FLASH_MESSAGE,
+        payload: { message: "Error", type: "error" }
       });
     });
 };
@@ -140,6 +170,7 @@ export const logoutUser = () => dispatch => {
   signout();
   //set current user to {} which will set isAuthenticated to false
   dispatch(setCurrentUser({}));
+  dispatch(clearErrors());
 };
 //Set Loading state
 export const setLoading = () => {

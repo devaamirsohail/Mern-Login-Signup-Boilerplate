@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { withRouter } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,10 +14,7 @@ import {
 } from "@material-ui/core";
 import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
 
-import "react-toastify/dist/ReactToastify.min.css";
-import "react-toastify/cjs/react-toastify.min";
-
-import { registerUser } from "../../actions/authActions";
+import { registerUser, clearErrors } from "../../actions/authActions";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -40,15 +36,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Signup = () => {
+const Signup = ({ history }) => {
   const [values, setValues] = useState({
-    name: "Test",
-    email: "dev.aamirsohail@gmail.com",
-    password: "123456"
+    name: "",
+    email: "",
+    password: ""
   });
   const classes = useStyles();
 
   const auth = useSelector(state => state.auth.isAuthenticated);
+  const errors = useSelector(state => state.errors);
   const dispatch = useDispatch();
 
   const handleChange = name => event => {
@@ -63,14 +60,16 @@ const Signup = () => {
       email,
       password
     };
-
-    dispatch(registerUser(userData));
+    dispatch(registerUser(userData, history));
   };
+
   const signupForm = () => (
     <form className={classes.form} noValidate>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
+            error={errors && errors.name ? true : false}
+            helperText={errors && errors.name}
             variant="outlined"
             required
             fullWidth
@@ -79,11 +78,12 @@ const Signup = () => {
             name="name"
             onChange={handleChange("name")}
             value={name}
-            autoComplete="lname"
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
+            error={errors && (errors.email || errors.error) ? true : false}
+            helperText={errors && (errors.email || errors.error)}
             variant="outlined"
             required
             fullWidth
@@ -97,6 +97,8 @@ const Signup = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
+            error={errors && errors.password ? true : false}
+            helperText={errors && errors.password}
             variant="outlined"
             required
             fullWidth
@@ -122,7 +124,11 @@ const Signup = () => {
       </Button>
       <Grid container justify="flex-end">
         <Grid item>
-          <Link to="/signin" variant="body2">
+          <Link
+            onClick={() => dispatch(clearErrors())}
+            to="/signin"
+            variant="body2"
+          >
             Already have an account? Sign in
           </Link>
         </Grid>
@@ -139,7 +145,6 @@ const Signup = () => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <ToastContainer />
         {auth ? <Redirect to="/" /> : null}
         {signupForm()}
       </div>

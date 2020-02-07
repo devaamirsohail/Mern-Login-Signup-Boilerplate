@@ -23,6 +23,7 @@ exports.getUser = (req, res) => {
 //update user controller
 exports.updateUser = (req, res) => {
   const { name, password } = req.body;
+  const errors = {};
 
   User.findOne({ _id: req.user._id })
     .then(user => {
@@ -32,21 +33,18 @@ exports.updateUser = (req, res) => {
         });
       }
       if (!name) {
-        return res.status(400).json({
-          error: "Name is required"
-        });
+        errors.name = "Name is required";
+        return res.status(400).json(errors);
       }
       if (name.length < 2 || name.length > 30) {
-        return res.status(400).json({
-          error: "Name must be between 2 to 30 characters"
-        });
+        errors.name = "Name must be between 2 to 30 characters";
+        return res.status(400).json(errors);
       }
 
       if (password) {
         if (password.length < 6) {
-          return res.status(400).json({
-            error: "Password must be at least 6 characters long"
-          });
+          errors.password = "Password must be at least 6 characters long";
+          return res.status(400).json(errors);
         } else {
           bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(password, salt, (err, hash) => {

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 
-import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import {
   makeStyles,
@@ -14,10 +13,7 @@ import {
 } from "@material-ui/core";
 import RotateLeftIcon from "@material-ui/icons/RotateLeft";
 
-import "react-toastify/dist/ReactToastify.min.css";
-import "react-toastify/cjs/react-toastify.min";
-
-import { forgetPassword } from "../../actions/authActions";
+import { forgotPassword } from "../../actions/authActions";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -43,6 +39,7 @@ const useStyles = makeStyles(theme => ({
 const Forgot = () => {
   const classes = useStyles();
   const auth = useSelector(state => state.auth.isAuthenticated);
+  const errors = useSelector(state => state.errors);
 
   const [values, setValues] = useState({
     email: ""
@@ -57,7 +54,7 @@ const Forgot = () => {
   };
   const handleSubmit = event => {
     event.preventDefault();
-    dispatch(forgetPassword({ email }));
+    dispatch(forgotPassword({ email }));
   };
   const forgotPasswordForm = () => (
     <div className={classes.paper}>
@@ -78,7 +75,8 @@ const Forgot = () => {
           name="email"
           value={email}
           onChange={handleChange("email")}
-          autoComplete="email"
+          error={errors && (errors.email || errors.error) ? true : false}
+          helperText={errors && (errors.email || errors.error)}
           autoFocus
         />
 
@@ -99,7 +97,6 @@ const Forgot = () => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <ToastContainer />
       {auth ? <Redirect to="/" /> : null}
       {forgotPasswordForm()}
     </Container>
